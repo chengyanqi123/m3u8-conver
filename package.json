@@ -1,0 +1,29 @@
+{
+    "name": "m3u8-conver-core",
+    "description": "Convert network or local m3u8 files into media files.将网络或者本地的m3u8文件转换成媒体文件",
+    "type": "module",
+    "main": "index.js",
+    "engines": {
+        "node": ">=v16.0.0"
+    },
+    "scripts": {
+        "test": "node test/index.js"
+    },
+    "keywords": [
+        "m3u8-downloader",
+        "download",
+        "downloader",
+        "chengyanqi",
+        "conver"
+    ],
+    "author": {
+        "name": "Cheng Yanqi",
+        "email": "erickcheng@163.com"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "@ffmpeg-installer/ffmpeg": "^1.1.0",
+        "got": "^14.0.0",
+        "m3u8-parser": "^7.1.0"
+    }
+}

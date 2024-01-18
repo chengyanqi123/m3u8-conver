@@ -46,7 +46,6 @@ export default async function (options, parsered, downloadChange) {
 
         // download
         const fragment = new Fragment(origin, options)
-
         await fragment.download(downloadChange)
         const savePath = await fragment.merge()
         return Promise.resolve(savePath)

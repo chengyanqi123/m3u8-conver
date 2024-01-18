@@ -22,6 +22,10 @@
         "name": "Cheng Yanqi",
         "email": "erickcheng@163.com"
     },
+    "repository": {
+        "type": "git",
+        "url": "git://https://github.com/chengyanqi123/m3u8-conver-core"
+    },
     "homepage": "https://github.com/chengyanqi123",
     "license": "MIT",
     "dependencies": {

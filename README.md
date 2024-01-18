@@ -1,9 +1,3 @@
-<head>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/v4-shims.js"></script>
-</head>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
-
 # 📖Introduction
 
 Convert network or local m3u8 files to media files (such as mp4, avi, etc.)

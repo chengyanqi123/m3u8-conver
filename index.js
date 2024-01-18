@@ -20,7 +20,7 @@ export default async function (options, callbacks = {}) {
         decodeSuffix: ".ts",
         requestOptions: {},
     }
-    options = Object.assign({}, options, defaultOptions)
+    options = Object.assign({}, defaultOptions, options)
     try {
         // parser
         const origin = new Origin(options)

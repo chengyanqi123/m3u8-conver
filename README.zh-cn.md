@@ -154,6 +154,6 @@ async function parserHandler(fragment, index) {
 
 # TODOS
 
-- [ ] AES-196-CBC/AES-196-CBC解密
+- [ ] AES-196-CBC/AES-256-CBC解密
 - [x] 自定义Http Header下载
 - [ ] 多线程下载

@@ -23,7 +23,7 @@ export default async function (options, parsered, downloadChange) {
         const origin = new Origin(options)
         options.url ? await origin.parserUrl() : await origin.parserFile()
         await origin.addCache()
-        parsered(origin.list)
+        isFunction(parsered) && parsered(origin.list)
 
         // download
         const fragment = new Fragment(origin, options)

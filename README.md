@@ -147,3 +147,9 @@ async function parserHandler(fragment, index) {
     return fragment
 }
 ```
+
+# TODOS
+
+- [ ] decode AES-196-CBC/AES-196-CBC
+- [ ] Custom Http Header downloads
+- [ ] multithreading downloading

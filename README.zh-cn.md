@@ -146,3 +146,9 @@ async function parserHandler(fragment, index) {
     return fragment
 }
 ```
+
+# TODOS
+
+- [ ] AES-196-CBC/AES-196-CBC解密
+- [ ] 自定义Http Header下载
+- [ ] 多线程下载

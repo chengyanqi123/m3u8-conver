@@ -6,7 +6,7 @@
 
 请确保Nodejs>=v16.0.0
 
-如果您没有安转Nodejs，请先安装[Nodejs](https://nodejs.org)
+如果您没有安装Nodejs，请先安装[Nodejs](https://nodejs.org)
 
 ```
 # npm

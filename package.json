@@ -1,7 +1,7 @@
 {
     "name": "m3u8-conver-core",
     "description": "Convert network or local m3u8 files into media files.将网络或者本地的m3u8文件转换成媒体文件",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "type": "module",
     "main": "index.js",
     "engines": {

@@ -84,17 +84,18 @@ console.log("convered path: ", output)
 ## fragment
 
 - **`fragment`[Object]**: 解析后的所有ts片段
-- **`duration`[Number]**: 片段时长
-- **`uri`[String]**: 片段的uri链接
-- **`key`[Object]**: 加密参数, 如果没有则表示未加密
-  - **`key.method`[String]**: 加密方法
-  - **`key.uri`[String]**: 加密的key的uri链接
-  - **`key.iv`[ArrayBuffer]**: 加密的iv
-  - **`key.key`[ArrayBuffer]**: 加密的key内容, 通过uri获取
-- **`encryption`[Boolean]**: 该片段是否加密, 默认: false
-- **`timeline`[Number]**: 时间线
 
-- **`index`[Number]**: 当前ts片段的索引
+  - **`duration`[Number]**: 片段时长
+  - **`uri`[String]**: 片段的uri链接
+  - **`key`[Object]**: 加密参数, 如果没有则表示未加密
+    - **`key.method`[String]**: 加密方法
+    - **`key.uri`[String]**: 加密的key的uri链接
+    - **`key.iv`[ArrayBuffer]**: 加密的iv
+    - **`key.key`[ArrayBuffer]**: 加密的key内容, 通过uri获取
+  - **`encryption`[Boolean]**: 该片段是否加密, 默认: false
+  - **`timeline`[Number]**: 时间线
+
+  - **`index`[Number]**: 当前ts片段的索引
 
 ## 解析器返回值
 

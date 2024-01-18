@@ -85,15 +85,16 @@ The parser must be a function whose 'this' points to an instance of Origin, and 
 ## fragment
 
 - **`fragment`[Object]**: indicates all parsed ts fragments
-- **`duration`[Number]**: indicates the duration of the segment
-- **`uri`[String]**: uri link of the fragment
-- **`key`[Object]**: indicates an encryption parameter. If no, it indicates that no encryption is performed
-  - **`key.method`[String]**: indicates the encryption method
-  - **`key.uri`[String]**: uri link of the encrypted key
-  - **`key.iv`[ArrayBuffer]**: indicates the encrypted iv
-  - **`key.key`[ArrayBuffer]**: indicates the encrypted key content. The value is obtained by the uri
-- **encryption[Boolean]**: Specifies whether the segment is encrypted. The default value is false
-- **timeline[Number]**: Timeline
+
+  - **`duration`[Number]**: indicates the duration of the segment
+  - **`uri`[String]**: uri link of the fragment
+  - **`key`[Object]**: indicates an encryption parameter. If no, it indicates that no encryption is performed
+    - **`key.method`[String]**: indicates the encryption method
+    - **`key.uri`[String]**: uri link of the encrypted key
+    - **`key.iv`[ArrayBuffer]**: indicates the encrypted iv
+    - **`key.key`[ArrayBuffer]**: indicates the encrypted key content. The value is obtained by the uri
+  - **encryption[Boolean]**: Specifies whether the segment is encrypted. The default value is false
+  - **timeline[Number]**: Timeline
 
 - **index[Number]**: indicates the index of the current ts segment
 

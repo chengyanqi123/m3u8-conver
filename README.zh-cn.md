@@ -40,21 +40,21 @@ console.log("convered path: ", ouput)
 
 ## options
 
-- url[String]: 需要转换m3u8文件的url
-- input[String]: 需要转换的m3u8本地文件
-- path[String]: 转换后的保存路径, 默认: 当前终端执行的路径
-- name[String]: 转换后的文件名(包含后缀), 默认: "执行时间戳.mp4"
-- tempDir[String]: ts片的临时保存路径, 默认: path.resolve(__dirname, '.temp'),
-- encodeSuffix[String]: 未解密的ts片后缀, 默认为: ".encode"
-- decodeSuffix[String]: 已解密或者无需解密的ts片后缀, 默认: ".ts"
-- clear[Boolean]: 是否只执行清楚缓存
+- **url[String]**: 需要转换m3u8文件的url
+- **input[String]**: 需要转换的m3u8本地文件
+- **path[String]**: 转换后的保存路径, 默认: 当前终端执行的路径
+- **name[String]**: 转换后的文件名(包含后缀), 默认: "执行时间戳.mp4"
+- **tempDir[String]**: ts片的临时保存路径, 默认: path.resolve(__dirname, '.temp'),
+- **encodeSuffix[String]**: 未解密的ts片后缀, 默认为: ".encode"
+- **decodeSuffix[String]**: 已解密或者无需解密的ts片后缀, 默认: ".ts"
+- **clear[Boolean]**: 是否只执行清楚缓存
 
 ## parsered(fragments)
 
-- fragments[Array]: 解析后的所有片段信息
+- **fragments[Array]**: 解析后的所有片段信息
 
 ## downloadChange(total, current, fragment)
 
-- total[Number]: 总数
-- current[Number]: 当前索引
-- fragment[Object]: 当前的ts片段信息
+- **total[Number]**: 总数
+- **current[Number]**: 当前索引
+- **fragment[Object]**: 当前的ts片段信息

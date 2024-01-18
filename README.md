@@ -41,21 +41,21 @@ console.log("convered path: ", ouput)
 
 ## options
 
-- url[String]: indicates the url of the m3u8 file to be converted
-- input[String]: indicates the local m3u8 file to be converted
-- path[String]: save path after conversion. Default: save path of the current terminal
-- name[String]: indicates the converted file name (including the suffix). The default value is "execute timestamp.mp4".
-- tempDir[String]: indicates the temporary save path for ts chips. Default value: path.resolve(__dirname, '.temp'),
-- encodeSuffix [String]: indicates the suffix of an undecrypted ts slice. The default is ".encode".
-- decodeSuffix [String]: decrypted or undecrypted ts slice suffix. Default: ".ts"
-- clear[Boolean]: Specifies whether to execute only the clear cache
+- **url[String]**: indicates the url of the m3u8 file to be converted
+- **input[String]**: indicates the local m3u8 file to be converted
+- **path[String]**: save path after conversion. Default: save path of the current terminal
+- **name[String]**: indicates the converted file name (including the suffix). The default value is "execute timestamp.mp4".
+- **tempDir[String]**: indicates the temporary save path for ts chips. Default value: path.resolve(__dirname, '.temp'),
+- **encodeSuffix [String]**: indicates the suffix of an undecrypted ts slice. The default is ".encode".
+- **decodeSuffix [String]**: decrypted or undecrypted ts slice suffix. Default: ".ts"
+- **clear[Boolean]**: Specifies whether to execute only the clear cache
 
 ## parsered(fragments)
 
-- fragments[Array]: indicates information about all fragments after resolution
+- **fragments[Array]**: indicates information about all fragments after resolution
 
 ## downloadChange(total, current, fragment)
 
-- total[Number]: indicates the total number
-- current[Number]: indicates the current index
-- fragment[Object]: indicates information about the current ts fragment
+- **total[Number]**: indicates the total number
+- **current[Number]**: indicates the current index
+- **fragment[Object]**: indicates information about the current ts fragment

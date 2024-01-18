@@ -18,6 +18,7 @@ export default async function (options, callbacks = {}) {
         tempDir: path.resolve(__dirname, ".temp"),
         encodeSuffix: ".encode",
         decodeSuffix: ".ts",
+        requestOptions: {},
     }
     options = Object.assign({}, options, defaultOptions)
     try {

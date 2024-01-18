@@ -53,6 +53,11 @@ console.log("convered path: ", output)
 - **`encodeSuffix`[String]**: indicates the suffix of an undecrypted ts slice. The default is ".encode".
 - **`decodeSuffix`[String]**: decrypted or undecrypted ts slice suffix. Default: ".ts"
 - **`clear`[Boolean]**: Specifies whether to execute only the clear cache
+- **`httpOptions`[httpOptions]**: http option to download ts slice, default: {}. The following are common configurations. See more details[got-options](https://github.com/sindresorhus/got/blob/3822412385506a1efef6580d270eae14086b9b43/documentation/2-options.md).Note: This configuration only takes effect when you download ts files, not when you download keys. Use a `custom parser` if necessary.
+  - **`method`[String]**: Request method, default: "GET"
+  - **`headers`[Object]**: Request header information
+  - **`timeout`[Object]**: Configure the request timeout. See details[got-timeout](https://github.com/sindresorhus/got/blob/3822412385506a1efef6580d270eae14086b9b43/documentation/6-timeout.md)
+  - **`body`[String|Buffer|Stream|Generator|AsyncGenerator|FormData|undefined]**: The request body is generally used with headers["Content-Type"]
 
 ## callbacks
 

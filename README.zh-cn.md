@@ -48,10 +48,15 @@ console.log("convered path: ", output)
 - **`input`[String]**: 需要转换的m3u8本地文件
 - **`path`[String]**: 转换后的保存路径, 默认: 当前终端执行的路径
 - **`name`[String]**: 转换后的文件名(包含后缀), 默认: "执行时间戳.mp4"
-- **`tempDir`[String]**: ts片的临时保存路径, 默认: path.resolve(__dirname, '.temp'),
+- **`tempDir`[String]**: ts片的临时保存路径, 默认: path.resolve(__dirname, '.temp')
 - **`encodeSuffix`[String]**: 未解密的ts片后缀, 默认为: ".encode"
 - **`decodeSuffix`[String]**: 已解密或者无需解密的ts片后缀, 默认: ".ts"
 - **`clear`[Boolean]**: 是否只执行清楚缓存
+- **`httpOptions`[httpOptions]**: 下载ts片的http选项, 默认: {}。以下是常见配置, 更多配置详见[got官网-options](https://github.com/sindresorhus/got/blob/3822412385506a1efef6580d270eae14086b9b43/documentation/2-options.md)。注意: 此配置只在下载ts片时生效，下载密钥的时候此配置无效，如果需要请使用`自定义解析器`。
+  - **`method`[String]**: 请求方法, 默认: "GET"
+  - **`headers`[Object]**: 请求头信息
+  - **`timeout`[Object]**: 请求超时配置。详见[got官网-timeout](https://github.com/sindresorhus/got/blob/3822412385506a1efef6580d270eae14086b9b43/documentation/6-timeout.md)
+  - **`body`[String|Buffer|Stream|Generator|AsyncGenerator|FormData|undefined]**: 请求体, 一般需配合`headers["Content-Type"]`使用
 
 ## callbacks
 

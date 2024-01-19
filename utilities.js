@@ -6,6 +6,18 @@ export function isFunction(func) {
     return typeof func === "function"
 }
 
+export function detectAesMode(key) {
+    key = Buffer.isBuffer(key) ? key : Buffer.from(key)
+    if (key.length === 16) {
+        return "AES-128-CBC"
+    } else if (key.length === 24) {
+        return "AES-192-CBC"
+    } else if (key.length === 32) {
+        return "AES-256-CBC"
+    }
+    throw new Error("Invalid AES mode!\n无法解析的秘钥!")
+}
+
 export function zeroPad(number, width) {
     const strNumber = String(number)
     const padding = "0".repeat(Math.max(0, width - strNumber.length))

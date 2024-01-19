@@ -131,7 +131,7 @@ async function parserHandler(fragment, index) {
     // Next all encryption is true
     fragment.encryption = true
     // The standard encryption method is `AES-128-CBD`
-    key.method = (key.method + "-cbc").toUpperCase()
+    key.method = detectAesMode(key.method) || "AES-128-CBC"
     // ts key uri has portcol?
     key.uri = key.uri.startsWith("http") ? key.uri : url.resolve(fragment.uri, key.uri)
     // get key data(key.key) by key.uri
@@ -155,6 +155,6 @@ async function parserHandler(fragment, index) {
 
 # TODOS
 
-- [ ] decode AES-196-CBC/AES-256-CBC
+- [x] decode AES-128-CBC/AES-192-CBC/AES-256-CBC
 - [x] Custom Http Header downloads
 - [ ] multithreading downloading

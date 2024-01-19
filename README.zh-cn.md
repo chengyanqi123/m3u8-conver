@@ -130,7 +130,7 @@ async function parserHandler(fragment, index) {
     // 接下来都是处理加密参数的逻辑
     fragment.encryption = true
     // 标准的加密方法默认是AES-128-CBC
-    key.method = (key.method + "-cbc").toUpperCase()
+    key.method = detectAesMode(key.method) || "AES-128-CBC"
     // 秘钥的链接是否是http开头
     // 如果不是则需要转换
     key.uri = key.uri.startsWith("http") ? key.uri : url.resolve(fragment.uri, key.uri)
@@ -154,6 +154,6 @@ async function parserHandler(fragment, index) {
 
 # TODOS
 
-- [ ] AES-196-CBC/AES-256-CBC解密
+- [x] AES-128-CBC/AES-192-CBC/AES-256-CBC
 - [x] 自定义Http Header下载
 - [ ] 多线程下载

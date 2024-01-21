@@ -2,7 +2,7 @@ English｜[简体中文](./README.zh-cn.md)
 
 # 📖Introduction
 
-Convert network or local m3u8 files to media files (such as mp4, avi, etc.).
+Convert network or local `m3u8` files to media files (such as `mp4`, `avi`, etc.).
 
 - [x] Decode AES-123-CBC
 - [x] Decode AES-192-CBC
@@ -15,7 +15,7 @@ Convert network or local m3u8 files to media files (such as mp4, avi, etc.).
 
 # 🚀Install
 
-Make sure` Nodejs>=v16.13.0`
+Make sure`Nodejs>=v16.13.0`
 
 If you do not install `Nodejs`, Please install [Nodejs](https://nodejs.org)
 
@@ -123,9 +123,9 @@ The parser must be a function whose 'this' points to an instance of Origin, and 
 
 ## Parser return value
 
-> The parser must return a 'fragment' object, and if there is an encryption argument (' fragment.key '), it must ensure its correctness.
+> The parser must return a `fragment` object, and if there is an encryption argument (`fragment.key`), it must ensure its correctness.
 
-Because when you use a custom parser, our parser will not execute, and the returned fragment will be used as the basis for subsequent decryption and download of m3u8. If the encryption parameter of 'fragment' returned is incorrect, the m3u8 file cannot be successfully converted. If there is no encryption parameter, ignore it.
+Because when you use a custom parser, our parser will not execute, and the returned fragment will be used as the basis for subsequent decryption and download of `ts` fragment. If the encryption parameter of 'fragment' returned is incorrect, the m3u8 file cannot be successfully converted. If there is no encryption parameter, ignore it.
 
 ## Example
 

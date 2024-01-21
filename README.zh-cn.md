@@ -1,12 +1,23 @@
+简体中文｜[English](./README.md)
+
 # 📖简介
 
-将网络或者本地的m3u8文件转换成媒体文件(如: mp4、avi等)
+将网络或本地m3u8文件转换为媒体文件(如mp4, avi等)
+
+- [x] 解码AES-123-CBC
+- [x] 解码AES-192-CBC
+- [x] 解码AES-256-CBC
+- [X] 本地的m3u8转换下载
+- [x] 自定义保存格式
+- [x] 并发下载
+- [x] 自定义m3u8解析器
+- [x] 请求配置，自定义`Cookie`, `Referer`, `User-Agent`等
 
 # 🚀安装
 
-请确保Nodejs>=v16.0.0
+请确保`Nodejs>=v16.13.0`
 
-如果您没有安装Nodejs, 请先安装[Nodejs](https://nodejs.org)
+如果您没有安装`Nodejs`, 请先安装[Nodejs](https://nodejs.org)
 
 ```
 # npm
@@ -17,27 +28,40 @@ pnpm install m3u8-conver-core
 
 # 🚗使用
 
-请定义解析器请参考 [✏️进阶](#✏️进阶)
+请定义解析器请参考 [自定义解析器](#自定义解析器)
 
 ```js
 import mconver from "../index.js"
-const options = {
+// 基本使用
+const output = await mconver({
     url: "https://www.test.com",
-    // input: "1.m3u8",
-}
-
-const output = await mconver(options)
-// or callbacks
-await mconver(options, {
-  parsered(fragments) {
-      console.log("parsered")
-  },
-  downloadChange(total, current, fragment) {
-      console.log(`downloading... [${current + 1}/${total}]\r`)
-  },
-  ...
 })
 console.log("convered path: ", output)
+
+// 其他配置
+// 更多配置详见文档 #Options
+await mconver({
+    url: "https://www.test.com",
+    name: "output.mp4",
+    concurrency: 6,
+    requestOptions: {
+        method: "GET",
+        headers: {
+            "x-token": "your token",
+            Cookie: "your cookie",
+        },
+    },
+    parsered(fragments) {
+        console.log(fragments, "m3u8 parsered!")
+    },
+    onchange(total, current, fragment) {
+        console.log(`downloading... [${current + 1}/${total}]\r`)
+    },
+    parser(fragment, index) {
+        // 自定义解析器 ...
+        return fragment
+    },
+})
 ```
 
 # 🔧选项
@@ -45,32 +69,31 @@ console.log("convered path: ", output)
 ## options
 
 - **`url`[String]**: 需要转换m3u8文件的url
-- **`input`[String]**: 需要转换的m3u8本地文件
-- **`path`[String]**: 转换后的保存路径, 默认: 当前终端执行的路径
+- **`input`[String]**: 需要转换的m3u8本地文件路径
+- **`path`[String]**: 转换后的保存路径, 默认: 当前终端路径。`process.cwd()`
 - **`name`[String]**: 转换后的文件名(包含后缀), 默认: "执行时间戳.mp4"
-- **`tempDir`[String]**: ts片的临时保存路径, 默认: path.resolve(__dirname, '.temp')
+- **`tempDir`[String]**: ts片的临时保存路径, 默认: m3u8-conver项目的根路径。`path.resolve(__dirname, "../", ".temp")`
 - **`encodeSuffix`[String]**: 未解密的ts片后缀, 默认为: ".encode"
+- **`concurrency`[Number]**: 并发数, 默认: 1, 不开启并发
 - **`decodeSuffix`[String]**: 已解密或者无需解密的ts片后缀, 默认: ".ts"
-- **`clear`[Boolean]**: 是否只执行清楚缓存
-- **`httpOptions`[httpOptions]**: 下载ts片的http选项, 默认: {}。以下是常见配置, 更多配置详见[got官网-options](https://github.com/sindresorhus/got/blob/3822412385506a1efef6580d270eae14086b9b43/documentation/2-options.md)。注意: 此配置只在下载ts片时生效，下载密钥的时候此配置无效，如果需要请使用`自定义解析器`。
+- **`clear`[Boolean]**: 是否只执行清楚缓存操作, 默认: false
+- **`httpOptions`[httpOptions]**: 下载ts片的http选项, 默认: {}。以下是常见配置, 更多配置详见[got官网-options](https://github.com/sindresorhus/got/blob/3822412385506a1efef6580d270eae14086b9b43/documentation/2-options.md)。
   - **`method`[String]**: 请求方法, 默认: "GET"
   - **`headers`[Object]**: 请求头信息
   - **`timeout`[Object]**: 请求超时配置。详见[got官网-timeout](https://github.com/sindresorhus/got/blob/3822412385506a1efef6580d270eae14086b9b43/documentation/6-timeout.md)
   - **`body`[String|Buffer|Stream|Generator|AsyncGenerator|FormData|undefined]**: 请求体, 一般需配合`headers["Content-Type"]`使用
 
-## callbacks
-
-- parsered(fragments)
+- parsered(fragments): m3u8文件解析完成后的回调
 
   - **`fragments`[Array]**: 解析后的所有片段信息
 
-- downloadChange(total, current, fragment)
+- onchange(total, current, fragment): 下载每一个ts片段完成时触发的回调
 
   - **`total`[Number]**: 总数
   - **`current`[Number]**: 当前索引
   - **`fragment`[Object]**: 当前的ts片段信息
 
-- parserHandler(fragment, index)
+- parser(fragment, index): 自定义解析器。详细用法请参考[自定义解析器](#自定义解析器)
   - **`fragment`[Object]**: 当前的ts片段信息
   - **`index`[Number]**: 当前片段的索引
 
@@ -96,8 +119,8 @@ console.log("convered path: ", output)
     - **`key.method`[String]**: 加密方法
     - **`key.uri`[String]**: 加密的key的uri链接
     - **`key.iv`[ArrayBuffer]**: 加密的iv
-    - **`key.key`[ArrayBuffer]**: 加密的key内容, 通过uri获取
-  - **`encryption`[Boolean]**: 该片段是否加密, 默认: false
+    - **`key.key`[ArrayBuffer]**: 加密的key内容, 通过`key.uri`获取
+  - **`encryption`[Boolean]**: 该片段是否加密, 默认: `false`
   - **`timeline`[Number]**: 时间线
 
   - **`index`[Number]**: 当前ts片段的索引
@@ -113,12 +136,21 @@ console.log("convered path: ", output)
 下面的示例是我们解析器的部分实现, 您可以将其作为参考, 以实现自己的解析器。
 
 ```js
+await mconver({
+    url: "https://www.test.com",
+    parser
+})
 async function parserHandler(fragment, index) {
+    /*
+    函数的内部this指向为Origin的实例
+    解析器执行多次，您可以单独处理每个片段。 
+     */
+
     // 当前ts片段的uri链接是否以http开头
     // 如果不是，则使用url.resolve转换完整的uri链接
     fragment.uri = fragment.uri.startsWith("http")
         ? fragment.uri
-        : url.resolve(this.options.url/* options.url  */, fragment.uri)
+        : url.resolve(this.options.url /* options.url */, fragment.uri)
 
     // 如果没有key参数，则表示未加密
     // 直接返回fragment，无需处理
@@ -129,31 +161,25 @@ async function parserHandler(fragment, index) {
 
     // 接下来都是处理加密参数的逻辑
     fragment.encryption = true
-    // 标准的加密方法默认是AES-128-CBC
-    key.method = detectAesMode(key.method) || "AES-128-CBC"
-    // 秘钥的链接是否是http开头
-    // 如果不是则需要转换
     key.uri = key.uri.startsWith("http") ? key.uri : url.resolve(fragment.uri, key.uri)
-    // 通过秘钥链接获取秘钥信息
+    // 获取秘钥
     // 如果有秘钥缓存，直接使用，避免重复获取，造成不必要的网络耗时
     if (this.keyCache[key.uri]) {
         key.key = this.keyCache[key.uri]
+        // 使用密钥识别真实的加密方式
+        // 局限于 AES-128-CBC | AES-192-CBC | AES-256-CBC, 默认为 AES-128-CBC
+        key.method = detectAesMode(this.keyCache[key.uri]) || "AES-128-CBC"
     } else {
-        const keyResponse = await got(key.uri, { responseType: "buffer" })
+        const requestOptions = Object.assign({}, this.options.requestOptions)
+        const keyResponse = await got(key.uri, { ...requestOptions, responseType: "buffer" })
         key.key = keyResponse.body.buffer
+        key.method = detectAesMode(key.key) || "AES-128-CBC"
         this.keyCache[key.uri] = key.key
     }
-
+    
     // 重新设置已经解析好的秘钥信息
     fragment.key = key
-
     // 返回fragment，这是必须的
     return fragment
 }
 ```
-
-# TODOS
-
-- [x] AES-128-CBC/AES-192-CBC/AES-256-CBC
-- [x] 自定义Http Header下载
-- [ ] 多线程下载

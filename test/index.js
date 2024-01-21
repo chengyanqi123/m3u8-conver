@@ -17,7 +17,7 @@ await mconver({
             Cookie: "intercom-session-dgkjq2bp=ZVh3S25SL1pOQTBHU3pKMnlMZHhFYWR6OTRJK1d6ZUg5cWdMdGpWMnoxYmZOOHNTbHRkMi9lUDM4N2l1RUNXRS0tVC9xUkdIOFRHQnhTT1RFaTFUVUtvdz09--b11b4314e510c38d73634d8b8d92a929c32568b2; _dd_s=rum=0&expire=1705594320987",
         },
     },
-    onparsered() {
+    parsered() {
         console.log("parsered")
         // It only needs parsing, no downloading, just send an exception after the parsing is completed!
         // throw new Error("parsered")

@@ -31,7 +31,7 @@ pnpm install m3u8-conver-core
 自定义定义解析器请参考 [自定义解析器](#自定义解析器)
 
 ```js
-import mconver from "../index.js"
+import mconver from "m3u8-conver"
 // 基本使用
 const output = await mconver({
     url: "https://www.test.com",
@@ -83,17 +83,17 @@ await mconver({
   - **`timeout`[Object]**: 请求超时配置。详见[got官网-timeout](https://github.com/sindresorhus/got/blob/3822412385506a1efef6580d270eae14086b9b43/documentation/6-timeout.md)
   - **`body`[String|Buffer|Stream|Generator|AsyncGenerator|FormData|undefined]**: 请求体, 一般需配合`headers["Content-Type"]`使用
 
-- parsered(fragments): m3u8文件解析完成后的回调
+- **`parsered(fragments)`[Function]**: m3u8文件解析完成后的回调
 
   - **`fragments`[Array]**: 解析后的所有片段信息
 
-- onchange(total, current, fragment): 下载每一个ts片段完成时触发的回调
+- **`onchange(total, current, fragment)`[Function]**: 下载每一个ts片段完成时触发的回调
 
   - **`total`[Number]**: 总数
   - **`current`[Number]**: 当前索引
   - **`fragment`[Object]**: 当前的ts片段信息
 
-- parser(fragment, index): 自定义解析器。详细用法请参考[自定义解析器](#自定义解析器)
+- **`parser(fragment, index)`[Function]**: 自定义解析器。详细用法请参考[自定义解析器](#自定义解析器)
   - **`fragment`[Object]**: 当前的ts片段信息
   - **`index`[Number]**: 当前片段的索引
 
@@ -136,11 +136,16 @@ await mconver({
 下面的示例是我们解析器的部分实现, 您可以将其作为参考, 以实现自己的解析器。
 
 ```js
+import mconver from "m3u8-conver"
+import got from "got"
+import { detectAesMode } from "m3u8-conver/lib/utilities.js"
+
 await mconver({
     url: "https://www.test.com",
     parser
 })
 async function parserHandler(fragment, index) {
+    console.log("useing custom parser!")
     /*
     函数的内部this指向为Origin的实例
     解析器执行多次，您可以单独处理每个片段。 

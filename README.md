@@ -32,7 +32,7 @@ pnpm install m3u8-conver-core
 custom parser see [Custom parser](#Custom parser)
 
 ```js
-import mconver from "../index.js"
+import mconver from "m3u8-conver"
 // basic
 const output = await mconver({
     url: "https://www.test.com",
@@ -132,11 +132,16 @@ Because when you use a custom parser, our parser will not execute, and the retur
 The following example is a partial implementation of our parser, which you can use as a reference to implement your own parser.
 
 ```js
+import mconver from "m3u8-conver"
+import got from "got"
+import { detectAesMode } from "m3u8-conver/lib/utilities.js"
+
 await mconver({
     url: "https://www.test.com",
     parser
 })
 async function parser(fragment, index) {
+    console.log("useing custom parser!")
     // this --> Origin instance
     // The parser is executed multiple times, and you can handle each fragment individually.
     if (this.options.input /* options.input */ && !fragment.uri.startsWith("http")) {

@@ -1,14 +1,17 @@
 {
+    "packageManager": "pnpm@8.14.1",
     "name": "m3u8-conver",
     "description": "Convert network or local m3u8 files into media files.将网络或者本地的m3u8文件转换成媒体文件",
     "version": "0.0.2",
     "type": "module",
-    "main": "index.js",
+    "main": "./dist/index.js",
     "engines": {
-        "node": ">=16.13.0"
+        "node": ">=16"
     },
     "scripts": {
-        "test": "node test/index.js"
+        "pack": "tsc -w",
+        "test": "node dist/test/index.js",
+        "test:ts": "ts-node src/test/index.js"
     },
     "keywords": [
         "m3u8",
@@ -32,5 +35,10 @@
         "got": "^14.0.0",
         "m3u8-parser": "^7.1.0",
         "p-queue": "^8.0.1"
+    },
+    "devDependencies": {
+        "@types/got": "^9.6.12",
+        "@types/node": "^20.11.5",
+        "typescript": "^5.3.3"
     }
 }

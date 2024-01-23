@@ -1,25 +1,20 @@
-import { isFunction, isObject, isString } from "./utilities.js"
+import { isFunction, isObject, isString, isDirectory } from "../utilities.js"
+import type { optionsType } from "../@types/types.js"
+import fs from "fs"
 
-function hasFileExtension(fileName) {
+
+function hasFileExtension(fileName: string): boolean {
     return isString(fileName) && fileName.split(".").length > 1
 }
 
-export default function validate(options) {
+
+export default function validate(options: optionsType): optionsType {
     // options
     if (!isObject(options)) {
         throw new Error("options is not Object!")
     }
 
-    // url and input
-    if (!options.url && !options.input && !options.clear) {
-        throw new Error("options is missing parameter url or input!")
-    }
-
-    if (options.url && !isString(options.url)) {
-        throw new Error("options.url is not String!")
-    }
-
-    if (options.input && !isString(options.input)) {
+    if (!options.input || !isString(options.input)) {
         throw new Error("options.input is not String!")
     }
 
@@ -28,23 +23,36 @@ export default function validate(options) {
         if (isNaN(concurrency)) {
             throw new Error("options.concurrency is not Number!")
         }
-        if (!Number.isInteger(concurrency) || concurrency < 1) {
-            throw new Error("options.concurrency is not Integer or less than 1!")
-        }
-        options.concurrency = concurrency
+        options.concurrency = Math.ceil(Math.abs(concurrency))
     }
 
     // save and temp path
-    if (options.path && !isString(options.path)) {
-        throw new Error("options.path is not String!")
+    if (options.path) {
+        if (!isString(options.path)) {
+            throw new Error("options.path is not String!")
+        }
+        try {
+            isDirectory(options.path)
+        } catch (error) {
+            fs.mkdirSync(options.path, { recursive: true })
+        }
     }
 
-    if (options.tempDir && !isString(options.tempDir)) {
-        throw new Error("options.tempDir is not String!")
+    if (options.tempDir) {
+        if (!isString(options.tempDir)) {
+            throw new Error("options.tempDir is not String!")
+        }
+        try {
+            isDirectory(options.tempDir)
+        } catch (error) {
+            fs.mkdirSync(options.tempDir, { recursive: true })
+        }
     }
 
     // filenames
+    // ffmpeg requires a file suffix
     if (!hasFileExtension(options.name)) {
+        // options.name = options.name.toString() || options.name.valueOf() || ""
         throw new Error("options.name is not a file suffix, it must '.'!")
     }
 
@@ -67,15 +75,15 @@ export default function validate(options) {
 
     // callbacks
     if (options.parsered && !isFunction(options.parsered)) {
-        delete options.parsered
+        throw new Error("options.parsered is not a Function!")
     }
 
     if (options.onchange && !isFunction(options.onchange)) {
-        delete options.onchange
+        throw new Error("options.onchange is not a Function!")
     }
 
     if (options.parser && !isFunction(options.parser)) {
-        delete options.parser
+        throw new Error("options.parser is not a Function!")
     }
 
     // false by default

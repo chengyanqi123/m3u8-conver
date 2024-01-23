@@ -1,0 +1,6 @@
+# Node dependencies
+node_modules
+
+.temp
+src
+tsconfig.json

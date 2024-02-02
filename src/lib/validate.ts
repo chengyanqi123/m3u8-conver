@@ -1,5 +1,5 @@
 import { isFunction, isObject, isString, isDirectory } from "../utilities.js"
-import type { optionsType } from "../@types/types.js"
+import type { optionsType } from "../types/index.js"
 import fs from "fs"
 
 

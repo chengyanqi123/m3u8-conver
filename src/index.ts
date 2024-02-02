@@ -1,6 +1,6 @@
 import Conver from './lib/conver.js'
 import path from "path"
-import type { optionsType } from './@types/types.js';
+import type { optionsType } from './types/index.js';
 
 export default async function (options?: optionsType) {
     // Default Options

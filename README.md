@@ -24,12 +24,12 @@ If you do not install `Nodejs`, Please install [Nodejs](https://nodejs.org)
 npm install m3u8-conver-core
 
 # pnpm
-pnpm install m3u8-conver-core
+pnpm add m3u8-conver-core
 ```
 
 # 🚗Use
 
-custom parser see [Custom parser](#Custom parser)
+custom parser see [Custom-parser](#Custom-parser)
 
 ```js
 import mconver from "m3u8-conver"
@@ -98,7 +98,7 @@ await mconver({
 
 # ✏️Advanced
 
-## Custom parser
+## Custom-parser
 
 > In the vast majority of cases, you only need to use the standard m3u8 parser we provide without knowing its internal implementation.
 

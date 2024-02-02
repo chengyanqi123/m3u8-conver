@@ -1,20 +1,22 @@
 import path from "path"
 import crypto from "crypto"
 import { statSync as stat, readdir, readdirSync, existsSync, mkdirSync } from "fs"
-import type { ArrayBufferLikeType } from "./@types/types.js"
+import type { ArrayBufferLikeType } from "./types/index.js"
 
-function getRowType(value: unknown): string {
+function getRowType<T>(value: T): string {
     return Object.prototype.toString.call(value).slice(8, -1).toLowerCase()
 }
 
-export function isObject(value: unknown): boolean {
+export function isObject<T>(value: T): boolean {
     return getRowType(value) === "object"
 }
-export function isFunction(value: unknown): boolean {
+
+export function isFunction<T>(value: T): boolean {
     const rowType = getRowType(value)
     return rowType === "function" || rowType === "asyncfunction"
 }
-export function isString(value: unknown): boolean {
+
+export function isString<T>(value: T): boolean {
     return getRowType(value) === "string"
 }
 
@@ -23,20 +25,29 @@ export function isDirectory(path: string): boolean {
 }
 
 export function detectAesMode(key: ArrayBufferLikeType): string {
-    key = Buffer.isBuffer(key) ? key : Buffer.from(key)
+    if (!key) {
+        throw new Error("Invalid AES mode!")
+    }
+    if (!Buffer.isBuffer(key)) {
+        key = Buffer.from(key as string)
+    }
+
     if (key.length === 16) {
         return "AES-128-CBC"
     } else if (key.length === 24) {
         return "AES-192-CBC"
     } else if (key.length === 32) {
         return "AES-256-CBC"
+    } else {
+        throw new Error("Invalid AES mode!")
     }
-    throw new Error("Invalid AES mode!")
+
 }
 
 export function isWebLink(link: string): boolean {
     return /^https?:\/\//.test(link)
 }
+
 export function checkDirectory(path: string, suffix?: string): number {
     // Check the directory and downloaded fragments
     if (existsSync(path)) {

@@ -1,14 +1,6 @@
-declare module 'm3u8-parser' {
-    import 'm3u8-parser'
-    export type Parser = {
-        push: (data: string) => void,
-        end: () => void
-    }
-}
-
 export type requestMethodType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD' | 'OPTIONS';
 
-export type ArrayBufferLikeType = string | ArrayBuffer | Buffer | undefined | ''
+export type ArrayBufferLikeType = string | Buffer | undefined
 
 /* 
  */

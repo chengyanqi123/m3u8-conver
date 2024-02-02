@@ -1,9 +1,10 @@
-import type { optionsType, FragmentType, parserModel, cacheType } from "../@types/types.js"
+import type { optionsType, FragmentType, parserModel, cacheType } from "../types/index.js"
 import validate from "./validate.js"
 // Origin
 import fs from "fs"
 import url from "url"
 import path from "path"
+// @ts-ignore
 import { Parser } from "m3u8-parser"
 import { createMd5, zeroPad, detectAesMode, isWebLink, isDirectory, checkDirectory } from "../utilities.js"
 import got from "got"
@@ -28,10 +29,10 @@ class Conver {
     constructor(public options: optionsType) {
         this.options = validate(options)
     }
-    private async _download(url: string, path: string) {
+    private async _download(url: string, path: string): Promise<void> {
         return streamPipeline(got.stream(url, this.options.requestOptions), fs.createWriteStream(path))
     }
-    private async _decode(fragment: FragmentType) {
+    private async _decode(fragment: FragmentType): Promise<void> {
         const { encodePath, decodePath } = fragment
         const { key, iv, method } = fragment.key
         if (key && iv) {
@@ -72,8 +73,9 @@ class Conver {
             key.key = this.cache.get(key.uri)
         } else {
             const keyResponse = await got(key.uri, { ...this.options.requestOptions, responseType: "buffer" })
-            this.cache.set(key.uri, keyResponse.body.buffer)
-            key.key = keyResponse.body.buffer
+            const keyBuffer = Buffer.isBuffer(keyResponse.body.buffer) ? keyResponse.body.buffer : Buffer.from(keyResponse.body.buffer)
+            this.cache.set(key.uri, keyBuffer)
+            key.key = keyBuffer
         }
 
         if (key.key) {
@@ -86,7 +88,7 @@ class Conver {
         fragment.key = key
         return fragment
     }
-    async parser() {
+    async parser(): Promise<void> {
         // get m3u8 content
         this.model = isWebLink(this.options.input) ? 'Cloud' : 'Local'
         try {
@@ -126,13 +128,11 @@ class Conver {
             })
         }
     }
-    async downloader() {
+    async downloader(): Promise<void> {
         this.currentIndex = checkDirectory(this.tempPath, this.options.decodeSuffix)
         const leng = this.fragments.length
         const queue = new PQueue({ concurrency: this.options.concurrency || 1, autoStart: false })
         let completedCount = this.currentIndex
-        console.log('this.currentIndex', this.currentIndex, 'leng', leng);
-
 
         for (let i = this.currentIndex; i < leng; i++) {
             const fragment = this.fragments[i]
@@ -153,7 +153,7 @@ class Conver {
         }
         await queue.start().onIdle()
     }
-    merge() {
+    merge(): Promise<string> {
         return new Promise((resolve, reject) => {
             const fileList = []
             let files = fs.readdirSync(this.tempPath)

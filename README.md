@@ -32,8 +32,10 @@ pnpm i m3u8-conver -g
 ## 1. Used on the command
 
 ```bash
+# help
+mconver -h
 # Converts "https://www.test.com/test.m3u8" to the current directory "output. Mp4"
-mconer -i "https://www.test.com/test.m3u8"
+mconver -i "https://www.test.com/test.m3u8"
 # or parser local file, and set output file, and set the number of concurrent downloads
 mconver -i "./test.m3u8" -o "./output.mp4" -c 10
 ```

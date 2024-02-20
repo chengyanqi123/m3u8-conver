@@ -33,8 +33,10 @@ pnpm i m3u8-conver -g
 ## 1. 在命令行中使用
 
 ```bash
+# help
+mconver -h
 # 将"https://www.test.com/test.m3u8"转换为当前目录的"output.mp4", 并设置并发下载数量为10
-mconer -i "https://www.test.com/test.m3u8" -o "./output.mp4" -c 10
+mconver -i "https://www.test.com/test.m3u8" -o "./output.mp4" -c 10
 # 或者解析本地文件, 同时设置输出路径为“./output.mp4” | 并发下载数量为“10”
 mconver -i "./test.m3u8" -o "./output.mp4" -c 10
 ```

@@ -97,8 +97,9 @@ class Conver {
                 this.content = response.body
             } else {
                 if (isDirectory(this.options.input)) {
-                    throw new Error("input not is file path!")
+                    throw new Error("options.input file is not found!")
                 }
+                this.content = await fs.readFileSync(this.options.input, { encoding: "utf-8" })
             }
         } catch (error) {
             throw error
@@ -127,6 +128,9 @@ class Conver {
                 ...fragment
             })
         }
+        if (this.options.parsered) {
+            this.options.parsered(this.fragments)
+        }
     }
     async downloader(): Promise<void> {
         this.currentIndex = checkDirectory(this.tempPath, this.options.decodeSuffix)
@@ -152,6 +156,9 @@ class Conver {
             })
         }
         await queue.start().onIdle()
+        if (this.options.downloaded) {
+            this.options.downloaded()
+        }
     }
     merge(): Promise<string> {
         return new Promise((resolve, reject) => {

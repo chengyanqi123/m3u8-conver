@@ -21,15 +21,26 @@ If you do not install `Nodejs`, Please install [Nodejs](https://nodejs.org)
 
 ```bash
 # npm
-npm install m3u8-conver-core
+npm i m3u8-conver -g
 
 # pnpm
-pnpm add m3u8-conver-core
+pnpm i m3u8-conver -g
 ```
 
 # 🚗Use
 
-custom parser see [Custom-parser](#Custom-parser)
+## 1. Used on the command
+
+```bash
+# Converts "https://www.test.com/test.m3u8" to the current directory "output. Mp4"
+mconer -i "https://www.test.com/test.m3u8"
+# or parser local file, and set output file, and set the number of concurrent downloads
+mconver -i "./test.m3u8" -o "./output.mp4" -c 10
+```
+
+## 2. Used in the code
+
+custom parser see [Custom-parser](#custom-parser)
 
 ```js
 import mconver from "m3u8-conver"
@@ -91,7 +102,9 @@ await mconver({
   - **`total`[Number]**: indicates the fragment total number
   - **`current`[Number]**: indicates the current index
   - **`fragment`[Object]**: indicates information about the current ts fragment
-  
+
+- **`downloaded()`[Function]**: Callback after downloading all fragment information
+
 - **`parser(fragment, index)`[Function]**: custom parser, When this parameter is used, the internal parser will not execute, see [Custom parser](#Custom parser)
   - **`fragment`[Object]**: indicates information about the current ts fragment
   - **`index`[Number]**: indicates the current index

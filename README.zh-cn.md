@@ -13,20 +13,33 @@
 - [x] 自定义m3u8解析器
 - [x] 请求配置，自定义`Cookie`, `Referer`, `User-Agent`等
 
+其他定制解析可提`issues`或者邮箱`erickcheng@163.com`
+
 # 🚀安装
 
 请确保`Nodejs>=v16.13.0`
 
 如果您没有安装`Nodejs`, 请先安装[Nodejs](https://nodejs.org)
 
-```
+```bash
 # npm
-npm install m3u8-conver-core
+npm i m3u8-conver -g
 # pnpm 
-pnpm install m3u8-conver-core
+pnpm i m3u8-conver -g
 ```
 
 # 🚗使用
+
+## 1. 在命令行中使用
+
+```bash
+# 将"https://www.test.com/test.m3u8"转换为当前目录的"output.mp4", 并设置并发下载数量为10
+mconer -i "https://www.test.com/test.m3u8" -o "./output.mp4" -c 10
+# 或者解析本地文件, 同时设置输出路径为“./output.mp4” | 并发下载数量为“10”
+mconver -i "./test.m3u8" -o "./output.mp4" -c 10
+```
+
+## 2. 在脚本中使用
 
 自定义定义解析器请参考 [自定义解析器](#自定义解析器)
 
@@ -92,6 +105,8 @@ await mconver({
   - **`total`[Number]**: 总数
   - **`current`[Number]**: 当前索引
   - **`fragment`[Object]**: 当前的ts片段信息
+
+- **`downloaded()`[Function]**: 所有分片信息下载完成后的回调
 
 - **`parser(fragment, index)`[Function]**: 自定义解析器。详细用法请参考[自定义解析器](#自定义解析器)
   - **`fragment`[Object]**: 当前的ts片段信息

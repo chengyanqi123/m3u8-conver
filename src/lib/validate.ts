@@ -86,6 +86,10 @@ export default function validate(options: optionsType): optionsType {
         throw new Error("options.parser is not a Function!")
     }
 
+    if (options.downloaded && !isFunction(options.downloaded)) {
+        throw new Error("options.downloaded is not a Function!")
+    }
+
     // false by default
     options.clear = Boolean(options.clear || false)
 

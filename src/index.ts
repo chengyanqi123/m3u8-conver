@@ -1,12 +1,14 @@
 import Conver from './lib/conver.js'
 import path from "path"
+import { isWebLink } from './utilities.js';
 import type { optionsType } from './types/index.js';
 
-export default async function (options?: optionsType) {
+// example
+async function conver(options?: optionsType): Promise<string> {
     // Default Options
     const cwdPath = process.cwd()
-    const conver = new Conver({
-        input: "https://hls.vdtuzv.com/videos3/db1b5f653a24cda3b7bc4a52a4d1baed/db1b5f653a24cda3b7bc4a52a4d1baed.m3u8?auth_key=1706038497-65b014e1dcd6d-0-3252ee6923fedb5343b7ed9bf55b74d9&v=3&time=0",
+    const defaultOptions: optionsType = {
+        input: "",
         concurrency: 1,
         path: cwdPath,
         name: new Date().getTime() + ".mp4",
@@ -15,11 +17,41 @@ export default async function (options?: optionsType) {
         decodeSuffix: ".ts",
         clear: false,
         requestOptions: {},
-        onchange: (total, current) => {
-            console.log(`${current}/${total}`)
-        }
-    });
+    }
+
+    // merge options
+    options.input = options?.input || defaultOptions.input
+    options.concurrency = options?.concurrency || defaultOptions.concurrency
+    options.path = options?.path || defaultOptions.path
+    options.name = options?.name || defaultOptions.name
+    options.tempDir = options?.tempDir || defaultOptions.tempDir
+    options.encodeSuffix = options?.encodeSuffix || defaultOptions.encodeSuffix
+    options.decodeSuffix = options?.decodeSuffix || defaultOptions.decodeSuffix
+    options.clear = options?.clear || defaultOptions.clear
+    options.requestOptions = options?.requestOptions || defaultOptions.requestOptions
+    options.onchange = options?.onchange || defaultOptions.onchange
+    options.parser = options?.parser || defaultOptions.parser
+    options.parsered = options?.parsered || defaultOptions.parsered
+    options.downloaded = options?.downloaded || defaultOptions.downloaded
+    options.input = isWebLink(options.input) ? options.input : path.resolve(cwdPath, options.input)
+
+    // start main
+    const conver = new Conver(Object.assign(defaultOptions, options))
     await conver.parser()
     await conver.downloader()
     return await conver.merge()
 }
+
+// example
+// await conver({
+//     input: "https://www.test.com",
+//     concurrency: 10,
+//     parsered(fragments) {
+//         console.log(fragments.length);
+//     },
+//     onchange: (total: number, current: number) => {
+//         console.log(`${current}/${total}`)
+//     }
+// })
+
+export default conver

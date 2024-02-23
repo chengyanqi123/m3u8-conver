@@ -48,14 +48,14 @@ custom parser see [Custom-parser](#custom-parser)
 import mconver from "m3u8-conver"
 // basic
 const output = await mconver({
-    url: "https://www.test.com",
+    input: "https://www.test.com",
 })
 console.log("convered path: ", output)
 
 // other options
 // More configuration see document #Options
 await mconver({
-    url: "https://www.test.com",
+    input: "https://www.test.com",
     name: "output.mp4",
     concurrency: 6,
     requestOptions: {
@@ -82,8 +82,7 @@ await mconver({
 
 ## options
 
-- **`*url`[String]**: indicates the url of the m3u8 file to be converted
-- **`*input`[String]**: indicates the local m3u8 file to be converted
+- **`*input`[String]**: indicates the url or local file of the m3u8 file to be converted
 - **`concurrency`[Number]**: concurrency max number, default: 1
 - **`path`[String]**: save path after conversion. Default: Execution root path. `process.cwd()`
 - **`name`[String]**: indicates the converted file name (including the suffix). Default:  "execute timestamp.mp4". `new Date().getTime() + ".mp4"`
@@ -148,53 +147,50 @@ The following example is a partial implementation of our parser, which you can u
 
 ```js
 import mconver from "m3u8-conver"
-import got from "got"
-import { detectAesMode } from "m3u8-conver/lib/utilities.js"
+import got from "got" // or use other network request tools
+import url from "url"
+import { detectAesMode, isWebLink } from "m3u8-conver/dist/utilities.js"
 
 await mconver({
     url: "https://www.test.com",
     parser
 })
+
 async function parser(fragment, index) {
     console.log("useing custom parser!")
-    // this --> Origin instance
-    // The parser is executed multiple times, and you can handle each fragment individually.
-    if (this.options.input /* options.input */ && !fragment.uri.startsWith("http")) {
-        throw new Error(
-            "The download link is missing the host, please try using url mode!"
-        )
+    const uriIsWebLink = isWebLink(fragment.uri);
+    if (this.model === 'Local' && !uriIsWebLink) {
+        throw new Error("The download link is missing the host, please try using url mode!");
     }
-
     // fragment uri has portcol?
-    fragment.uri = fragment.uri.startsWith("http")
-        ? fragment.uri
-        : url.resolve(this.options.url /* options.url */, fragment.uri)
-
+    fragment.uri = uriIsWebLink ? fragment.uri : url.resolve(this.options.input, fragment.uri);
     // if fragment not key, this not's encryption
-    const key = Object.assign({}, fragment.key)
+    const key = Object.assign({}, fragment.key);
     if (!key || Object.keys(key).length === 0) {
-        return fragment
+        return fragment;
     }
-
+    if (!key.uri || !key.iv) {
+        throw new Error("The fragment encryption key or iv is missing the download link!");
+    }
     // next all encryption is true
-    fragment.encryption = true
-    key.uri = key.uri.startsWith("http") ? key.uri : url.resolve(fragment.uri, key.uri)
-    // get key
-    if (this.keyCache[key.uri]) {
-        key.key = this.keyCache[key.uri]
+    key.uri = isWebLink(key.uri) ? key.uri : url.resolve(fragment.uri, key.uri);
+    if (this.cache.get(key.uri)) {
         // Using the key to identify the real encryption mode
         // be confined to AES-128-CBC | AES-192-CBC | AES-256-CBC, default AES-128-CBC
-        key.method = detectAesMode(this.keyCache[key.uri]) || "AES-128-CBC"
+        key.key = this.cache.get(key.uri);
     } else {
-        const requestOptions = Object.assign({}, this.options.requestOptions)
-        const keyResponse = await got(key.uri, { ...requestOptions, responseType: "buffer" })
-        key.key = keyResponse.body.buffer
-        key.method = detectAesMode(key.key) || "AES-128-CBC"
-        this.keyCache[key.uri] = key.key
+        const keyResponse = await got(key.uri, { ...this.options.requestOptions, responseType: "buffer" });
+        const keyBuffer = Buffer.isBuffer(keyResponse.body.buffer) ? keyResponse.body.buffer : Buffer.from(keyResponse.body.buffer);
+        this.cache.set(key.uri, keyBuffer);
+        key.key = keyBuffer;
     }
-
+    if (key.key) {
+        key.method = detectAesMode(key.key);
+    } else {
+        key.method = "AES-128-CBC";
+    }
     // reset fragment.key
-    fragment.key = key
-    return fragment
+    fragment.key = key;
+    return fragment;
 }
 ```

@@ -13,7 +13,7 @@
 - [x] 自定义m3u8解析器
 - [x] 请求配置，自定义`Cookie`, `Referer`, `User-Agent`等
 
-其他定制解析可提`issues`或者邮箱`erickcheng@163.com`
+> 文档错误或者Bug反馈，以及其他定制解析可提`issues`或者邮箱`erickcheng@163.com`
 
 # 🚀安装
 
@@ -49,14 +49,14 @@ mconver -i "./test.m3u8" -o "./output.mp4" -c 10
 import mconver from "m3u8-conver"
 // 基本使用
 const output = await mconver({
-    url: "https://www.test.com",
+    input: "https://www.test.com",
 })
 console.log("convered path: ", output)
 
 // 其他配置
 // 更多配置详见文档 #Options
 await mconver({
-    url: "https://www.test.com",
+    input: "https://www.test.com",
     name: "output.mp4",
     concurrency: 6,
     requestOptions: {
@@ -83,8 +83,7 @@ await mconver({
 
 ## options
 
-- **`url`[String]**: 需要转换m3u8文件的url
-- **`input`[String]**: 需要转换的m3u8本地文件路径
+- **`input`[String]**: 需要转换的m3u8本地文件路径或者网络地址。
 - **`path`[String]**: 转换后的保存路径, 默认: 当前终端路径。`process.cwd()`
 - **`name`[String]**: 转换后的文件名(包含后缀), 默认: "执行时间戳.mp4"
 - **`tempDir`[String]**: ts片的临时保存路径, 默认: m3u8-conver项目的根路径。`path.resolve(__dirname, "../", ".temp")`
@@ -154,8 +153,9 @@ await mconver({
 
 ```js
 import mconver from "m3u8-conver"
-import got from "got"
-import { detectAesMode } from "m3u8-conver/lib/utilities.js"
+import got from "got" // 或者您可以使用其他的网络请求库
+import url from "url"
+import { detectAesMode, isWebLink } from "m3u8-conver/dist/utilities.js"
 
 await mconver({
     url: "https://www.test.com",
@@ -163,45 +163,40 @@ await mconver({
 })
 async function parserHandler(fragment, index) {
     console.log("useing custom parser!")
-    /*
-    函数的内部this指向为Origin的实例
-    解析器执行多次，您可以单独处理每个片段。 
-     */
-
-    // 当前ts片段的uri链接是否以http开头
-    // 如果不是，则使用url.resolve转换完整的uri链接
-    fragment.uri = fragment.uri.startsWith("http")
-        ? fragment.uri
-        : url.resolve(this.options.url /* options.url */, fragment.uri)
-
-    // 如果没有key参数，则表示未加密
-    // 直接返回fragment，无需处理
-    const key = Object.assign({}, fragment.key)
-    if (!key || Object.keys(key).length === 0) {
-        return fragment
+    const uriIsWebLink = isWebLink(fragment.uri);
+    if (this.model === 'Local' && !uriIsWebLink) {
+        throw new Error("The download link is missing the host, please try using url mode!");
     }
-
-    // 接下来都是处理加密参数的逻辑
-    fragment.encryption = true
-    key.uri = key.uri.startsWith("http") ? key.uri : url.resolve(fragment.uri, key.uri)
-    // 获取秘钥
-    // 如果有秘钥缓存，直接使用，避免重复获取，造成不必要的网络耗时
-    if (this.keyCache[key.uri]) {
-        key.key = this.keyCache[key.uri]
+    // 保证切片地址protocol完整性
+    fragment.uri = uriIsWebLink ? fragment.uri : url.resolve(this.options.input, fragment.uri);
+    // 切片没有key默认表示未加密
+    const key = Object.assign({}, fragment.key);
+    if (!key || Object.keys(key).length === 0) {
+        return fragment;
+    }
+    if (!key.uri || !key.iv) {
+        throw new Error("The fragment encryption key or iv is missing the download link!");
+    }
+    // 加密处理的逻辑
+    key.uri = isWebLink(key.uri) ? key.uri : url.resolve(fragment.uri, key.uri);
+    if (this.cache.get(key.uri)) {
         // 使用密钥识别真实的加密方式
         // 局限于 AES-128-CBC | AES-192-CBC | AES-256-CBC, 默认为 AES-128-CBC
-        key.method = detectAesMode(this.keyCache[key.uri]) || "AES-128-CBC"
+        key.key = this.cache.get(key.uri);
     } else {
-        const requestOptions = Object.assign({}, this.options.requestOptions)
-        const keyResponse = await got(key.uri, { ...requestOptions, responseType: "buffer" })
-        key.key = keyResponse.body.buffer
-        key.method = detectAesMode(key.key) || "AES-128-CBC"
-        this.keyCache[key.uri] = key.key
+        const keyResponse = await got(key.uri, { ...this.options.requestOptions, responseType: "buffer" });
+        const keyBuffer = Buffer.isBuffer(keyResponse.body.buffer) ? keyResponse.body.buffer : Buffer.from(keyResponse.body.buffer);
+        this.cache.set(key.uri, keyBuffer);
+        key.key = keyBuffer;
     }
-    
+    if (key.key) {
+        key.method = detectAesMode(key.key);
+    } else {
+        key.method = "AES-128-CBC";
+    }
     // 重新设置已经解析好的秘钥信息
-    fragment.key = key
+    fragment.key = key;
     // 返回fragment，这是必须的
-    return fragment
+    return fragment;
 }
 ```
